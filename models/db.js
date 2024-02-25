@@ -3,7 +3,12 @@ import 'dotenv/config'
 
 const sequelize = new Sequelize(process.env.POSTGRES_DATABASE, process.env.POSTGRES_USERNAME, process.env.POSTGRES_PASSWORD, {
   host: process.env.POSTGRES_HOST,
-  dialect: 'postgres'
+  dialect: 'postgres',
+  logging: (msg) => {
+    if (!msg.includes('Executing (default): SELECT 1+1 AS result')) {
+      console.log(msg);
+    }
+  }
 })
 
 try {
