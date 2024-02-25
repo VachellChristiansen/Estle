@@ -59,12 +59,16 @@ class UserController {
         }
         const user = await helper.getUserDataByName(body.name)
         const sessionId = crypto.randomBytes(16).toString('hex')
+        const maxAge = 1000 * 60 * 60
         Session.create({
           SessionID: sessionId,
+          ExpiredAt: new Date(Date.now() + maxAge),
+          UserAgent: req.get('User-Agent'),
+          IpAddress: req.ip,
           UserId: user.get().id
         })
         res.cookie('SessionID', sessionId, {
-          maxAge: 1000 * 60 * 60,
+          maxAge: maxAge,
           httpOnly: true
         })
         return res.status(HTTP_STATUS_CODE.successful.ok).send("Successful Login")
@@ -76,7 +80,7 @@ class UserController {
   // PATCH() {
   //   const helper = new UserControllerHelper()
   //   return {
-  //     async changeUserName(req, res) {
+  //     async changeName(req, res) {
   //       let body = req.body
   //       let userExists = await helper.isUserExists(body.name)
   //       if (userExists) {
