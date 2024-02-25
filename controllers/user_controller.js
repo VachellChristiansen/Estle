@@ -6,6 +6,9 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 
 class UserController {
+  /**
+   * Handles `GET` request for User Routes
+   */
   GET() {
     return {
       base(req, res) {
@@ -13,7 +16,10 @@ class UserController {
       }
     }
   }
-
+  
+  /**
+   * Handles `POST` request for User Routes
+   */
   POST() {
     const helper = new UserControllerHelper()
     return {
@@ -22,6 +28,7 @@ class UserController {
        * 
        * Does:
        * - Check for existing user and returns **HTTP Error** if found
+       * - Create user in database
        * 
        * Returns **HTTP Success** when done
        */
@@ -44,6 +51,7 @@ class UserController {
        * Does:
        * - Check for existing user and returns **HTTP Error** if not found
        * - Check for password and returns **HTTP Error** if incorrect
+       * - Creates session in database
        * 
        * Returns **HTTP Success** when done
        */
@@ -75,27 +83,40 @@ class UserController {
       }
     }
   }
-
-  // TODO: Create Patch method to update user's name
-  // PATCH() {
-  //   const helper = new UserControllerHelper()
-  //   return {
-  //     async changeName(req, res) {
-  //       let body = req.body
-  //       let userExists = await helper.isUserExists(body.name)
-  //       if (userExists) {
-  //         return res.status(HTTP_STATUS_CODE.client_error.conflict).send("User already exists")
-  //       }
-  //       User.update({
-  //         UserName: body.name
-  //       }, {
-  //         where: {
-  //           UserName: 
-  //         }
-  //       })
-  //     }
-  //   }
-  // }
+  
+  /**
+   * Handles `PATCH` request for User Routes
+   */
+  PATCH() {
+    const helper = new UserControllerHelper()
+    return {
+      /**
+       * Controller to change user's name
+       * 
+       * Does:
+       * - Check for existing user name and returns **HTTP Error** if already used
+       * - Check for password and returns **HTTP Error** if incorrect
+       * - Updates user's name in database
+       * 
+       * Returns **HTTP Success** when done
+       */
+      async changeName(req, res) {
+        let body = req.body
+        let userExists = await helper.isUserExists(body.name)
+        if (userExists) {
+          return res.status(HTTP_STATUS_CODE.client_error.conflict).send("Name is alredy used")
+        }
+        User.update({
+          UserName: body.name
+        }, {
+          where: {
+            id: req.user.id 
+          }
+        })
+        return res.status(HTTP_STATUS_CODE.successful.ok).send("Name Changed Successfully")
+      }
+    }
+  }
 }
 
 class UserControllerHelper {
@@ -143,7 +164,6 @@ class UserControllerHelper {
         UserName: name
       }
     })
-    console.log(user)
     return user
   }
 
