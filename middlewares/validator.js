@@ -19,17 +19,35 @@ class Validator {
         .max(64)
     })
     return {
+      /**
+       * ### Middleware for validating user inputs at creating user
+       * 
+       * Uses userSchema to validate `user`, `pass`, and `repeatPass` from **request body**
+       * 
+       * Returns an **HTTP Error** if validation fails or `pass` is not same with `repeatPass`
+       */
       create(req, res, next) {
         const { error } = userSchema.with('name', ['pass', 'repeatPass']).validate(req.body)
         if (error) {
-          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(error.message)
+          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
+        }
+        if (req.body.pass != req.body.repeatPass) {
+          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
         }
         next()
       },
+
+      /**
+       * ### Middleware for validating user inputs at user login
+       * 
+       * Uses userSchema to validate `user` and `pass` from **request body**
+       * 
+       * Returns an **HTTP Error** if validation fails
+       */
       login(req, res, next) {
         const { error } = userSchema.with('name', 'pass').validate(req.body)
         if (error) {
-          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(error.message)
+          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
         }
         next()
       }
