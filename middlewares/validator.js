@@ -50,6 +50,21 @@ class Validator {
           return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
         }
         next()
+      },
+
+      /**
+       * ### Middleware for validating user inputs at user change name
+       * 
+       * Uses userSchema to validate `user` from **request body**
+       * 
+       * Returns an **HTTP Error** if validation fails
+       */
+      changeName(req, res, next) {
+        const { error } = userSchema.without('name', ['pass', 'repeatPass']).validate(req.body)
+        if (error) {
+          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
+        }
+        next()
       }
     }
   }
