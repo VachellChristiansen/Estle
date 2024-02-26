@@ -14,4 +14,6 @@ userRouter.post('/login', Validator.USER().login, UserController.POST().loginUse
 
 userRouter.patch('/changeName', Verificator.SESSION().verification, Validator.USER().changeName, UserController.PATCH().changeName)
 
+userRouter.delete('/delete', Verificator.SESSION().verification, UserController.DELETE().deleteUser)
+
 export default userRouter

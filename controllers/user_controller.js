@@ -10,6 +10,7 @@ class UserController {
    * Handles `GET` request for User Routes
    */
   GET() {
+    const helper = new UserControllerHelper()
     return {
       base(req, res) {
         return res.status(HTTP_STATUS_CODE.successful.ok).send("Hello Mom!")
@@ -19,14 +20,12 @@ class UserController {
        * Controller to logout `user`
        * 
        * Does:
-       * - Check for existing user and returns **HTTP Error** if not found
-       * - Check for password and returns **HTTP Error** if incorrect
-       * - Creates session in database
+       * - Delete user's `session` from database
+       * - Set Session ID cookie to expires
        * 
        * Returns **HTTP Success** when done
        */
       async logoutUser(req, res) {
-        let body = req.body
         await Session.destroy({
           where: {
             UserId: req.user.id
@@ -138,6 +137,39 @@ class UserController {
       }
     }
   }
+  
+  /**
+   * Handles `DELETE` request for User Routes
+   */
+  DELETE() {
+    const helper = new UserControllerHelper()
+    return {
+      /**
+       * Controller to delete `user`
+       * 
+       * Does:
+       * - Delete user's `session` from database
+       * - Set Session ID cookie to expires
+       * - Delete user's information from database
+       * 
+       * Returns **HTTP Success** when done
+       */
+      async deleteUser(req, res) {
+        await Session.destroy({
+          where: {
+            UserId: req.user.id
+          }
+        })
+        res.setHeader('Set-Cookie', `SessionID=${req.user.SessionID}; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`);
+        await User.destroy({
+          where: {
+            id: req.user.UserId
+          }
+        })
+        res.status(HTTP_STATUS_CODE.successful.no_content).send("User Deleted")
+      }
+    }
+  }
 }
 
 class UserControllerHelper {
@@ -195,11 +227,14 @@ class UserControllerHelper {
    * @returns `true` if found
    */
   async isUserExists(name) {
-    const user = await User.findAll({
+    const user = await User.findOne({
       where: {
         UserName: name
       }
     })
+    if (!user) {
+      return null
+    }
     return user.length > 0
   }
 
@@ -210,12 +245,15 @@ class UserControllerHelper {
    * @returns `true` if correct
    */
   async isPassCorrect(name, pass) {
-    const user = await User.findAll({
+    const user = await User.findOne({
       attributes: ['UserName', 'UserPass'],
       where: {
         UserName: name
       }
     })
+    if (!user) {
+      return null
+    }
     return bcrypt.compareSync(pass, user[0].get().UserPass)
   }
 }
