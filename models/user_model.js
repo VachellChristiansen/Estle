@@ -9,5 +9,11 @@ export const User = sequelize.define('User', {
   UserPass: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  PassResetToken: {
+    type: DataTypes.STRING
+  },
+  PassResetExpiry: {
+    type: DataTypes.DATE
   }
 })

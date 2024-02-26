@@ -13,6 +13,27 @@ class UserController {
     return {
       base(req, res) {
         return res.status(HTTP_STATUS_CODE.successful.ok).send("Hello Mom!")
+      },
+
+      /**
+       * Controller to logout `user`
+       * 
+       * Does:
+       * - Check for existing user and returns **HTTP Error** if not found
+       * - Check for password and returns **HTTP Error** if incorrect
+       * - Creates session in database
+       * 
+       * Returns **HTTP Success** when done
+       */
+      async logoutUser(req, res) {
+        let body = req.body
+        await Session.destroy({
+          where: {
+            UserId: req.user.id
+          }
+        })
+        res.setHeader('Set-Cookie', `SessionID=${req.user.SessionID}; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`);
+        return res.status(HTTP_STATUS_CODE.successful.ok).send("Successful Logout")
       }
     }
   }
@@ -38,7 +59,7 @@ class UserController {
         if (userExists) {
           return res.status(HTTP_STATUS_CODE.client_error.conflict).send("User already exists")
         }
-        User.create({
+        await User.create({
           UserName: body.name,
           UserPass: bcrypt.hashSync(body.pass, 12)
         })
@@ -68,7 +89,7 @@ class UserController {
         const user = await helper.getUserDataByName(body.name)
         const sessionId = crypto.randomBytes(16).toString('hex')
         const maxAge = 1000 * 60 * 60
-        Session.create({
+        await Session.create({
           SessionID: sessionId,
           ExpiredAt: new Date(Date.now() + maxAge),
           UserAgent: req.get('User-Agent'),
@@ -80,7 +101,7 @@ class UserController {
           httpOnly: true
         })
         return res.status(HTTP_STATUS_CODE.successful.ok).send("Successful Login")
-      }
+      },
     }
   }
   
@@ -106,11 +127,11 @@ class UserController {
         if (userExists) {
           return res.status(HTTP_STATUS_CODE.client_error.conflict).send("Name is alredy used")
         }
-        User.update({
+        await User.update({
           UserName: body.name
         }, {
           where: {
-            id: req.user.id 
+            id: req.user.id
           }
         })
         return res.status(HTTP_STATUS_CODE.successful.ok).send("Name Changed Successfully")

@@ -2,7 +2,7 @@ import express from 'express'
 
 import controller from '../controllers/controller.js'
 
-import accountRouter from './account_route.js'
+import accountRouter from './finance/account_route.js'
 import userRouter from './user_route.js'
 
 const router = express.Router()

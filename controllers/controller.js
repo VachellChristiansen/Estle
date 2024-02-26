@@ -1,7 +1,7 @@
 import { HTTP_STATUS_CODE } from '../constants/global_constant.js'
 import { User } from '../models/user_model.js'
-import { Account } from '../models/account_model.js'
 import { Session } from '../models/session_model.js'
+import { Account } from '../models/finance/account_model.js'
 
 class Controller {
   GET() {

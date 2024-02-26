@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODE } from '../constants/global_constant.js'
+import { HTTP_STATUS_CODE } from '../../constants/global_constant.js'
 
 class AccountController {
   GET() {
