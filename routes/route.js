@@ -2,14 +2,14 @@ import express from 'express'
 
 import controller from '../controllers/controller.js'
 
-import accountRouter from './finance/account_route.js'
+import financeRouter from './finance/finance_route.js'
 import userRouter from './user_route.js'
 import Verificator from '../middlewares/verificator.js'
 
 const router = express.Router()
 
-router.use('/account', Verificator.SESSION().verification)
-router.use('/account', accountRouter)
+router.use('/finance', Verificator.SESSION().verification)
+router.use('/finance', financeRouter)
 
 router.use('/user', userRouter)
 
