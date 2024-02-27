@@ -24,8 +24,6 @@ if (process.env.DATABASE == 'postgres') {
   })
 }
 
-
-
 try {
   await sequelize.authenticate();
   console.log('Connection has been established successfully.');
