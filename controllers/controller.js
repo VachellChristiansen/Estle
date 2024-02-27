@@ -13,13 +13,25 @@ class Controller {
       async migrate(req, res) {
         User.hasMany(Account)
         User.hasOne(Session)
+        User.hasMany(AccountType)
         Account.belongsTo(User)
+        AccountType.belongsTo(User)
         Session.belongsTo(User)
-        Account.belongsToMany(AccountType, { through: 'AccountAccountType', foreignKey: 'AccountId' })
-        AccountType.belongsToMany(Account, { through: 'AccountAccountType', foreignKey: 'AccountTypeId' })
+
+        AccountType.hasMany(Account)
+        Account.belongsTo(AccountType)
 
         await sequelize.sync({ force: true });
         return res.status(HTTP_STATUS_CODE.successful.created).send("Migration Done!")
+      },
+      async test(req, res) {
+        const result = await User.findOne({
+          where: {
+            UserName: "Bambang"
+          }
+        })
+        console.log(result)
+        return res.status(HTTP_STATUS_CODE.successful.ok).send(result)
       }
     }
   }

@@ -195,9 +195,9 @@ class UserControllerHelper {
   }
 
   /**
-   * Get `User Data` based on `User ID` in **User** table
+   * Get `User Data` based on `Name` in **User** table
    * 
-   * @param {*} userId 
+   * @param {*} name 
    * @returns user
    */
   async getUserDataByName(name) {
@@ -227,7 +227,7 @@ class UserControllerHelper {
   /**
    * Check if session exists based on `sid`
    * 
-   * @param {*} userId 
+   * @param {*} sid 
    * @returns `true` if found
    */
   async isSessionExists(sid) {
