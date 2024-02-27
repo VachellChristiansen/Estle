@@ -68,6 +68,59 @@ class Validator {
       }
     }
   }
+
+  ACCOUNT() {
+    const accountSchema = Joi.object({
+      name: Joi.string()
+        .alphanum()
+        .allow(' ')
+        .required(),
+      balance: Joi.number()
+        .precision(2),
+      provider: Joi.string()
+        .alphanum()
+        .allow(' '),
+      number: Joi.number(),
+      type: Joi.string()
+        .pattern(/^[a-zA-Z\s]+$/)
+    })
+    const typeSchema = Joi.object({
+      type: Joi.string()
+        .pattern(/^[a-zA-Z\s]+$/)
+        .required()
+    })
+    return {
+      /**
+       * ### Middleware for validating user inputs at create account
+       * 
+       * Uses accountSchema to validate `name`, `balance`, `type` from **request body**
+       * 
+       * Returns an **HTTP Error** if validation fails
+       */
+      account(req, res, next) {
+        const { error } = accountSchema.with('name', ['balance', 'type']).validate(req.body)
+        if (error) {
+          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
+        }
+        next()
+      },
+
+      /**
+       * ### Middleware for validating user inputs at create account type
+       * 
+       * Uses typeSchema to validate `type` from **request body**
+       * 
+       * Returns an **HTTP Error** if validation fails
+       */
+      type(req, res, next) {
+        const { error } = typeSchema.validate(req.body)
+        if (error) {
+          return res.status(HTTP_STATUS_CODE.client_error.bad_request).send(`Validation Error: ${error.message}`)
+        }
+        next()
+      },
+    }
+  }
 }
 
 export default new Validator()

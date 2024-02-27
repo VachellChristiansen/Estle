@@ -15,7 +15,7 @@ export const Session = sequelize.define('Session', {
     allowNull: false
   },
   IpAddress: {
-    type: DataTypes.INET,
+    type: DataTypes.STRING,
     allowNull: false
   }
 })
