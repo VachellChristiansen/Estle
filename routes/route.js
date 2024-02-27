@@ -15,5 +15,6 @@ router.use('/user', userRouter)
 
 router.get('/', controller.GET().base)
 router.get('/migrate', controller.GET().migrate)
+router.get('/test', controller.GET().test)
 
 export default router
