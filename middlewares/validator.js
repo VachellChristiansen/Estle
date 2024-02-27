@@ -72,21 +72,21 @@ class Validator {
   ACCOUNT() {
     const accountSchema = Joi.object({
       name: Joi.string()
-        .alphanum()
-        .allow(' ')
+        .pattern(/^[a-zA-Z0-9 ]+$/)
+        .trim()
         .required(),
       balance: Joi.number()
         .precision(2),
       provider: Joi.string()
-        .alphanum()
-        .allow(' '),
+        .pattern(/^[a-zA-Z0-9 ]+$/)
+        .trim(),
       number: Joi.number(),
       type: Joi.string()
-        .pattern(/^[a-zA-Z\s]+$/)
+        .pattern(/^[a-zA-Z ]+$/)
     })
     const typeSchema = Joi.object({
       type: Joi.string()
-        .pattern(/^[a-zA-Z\s]+$/)
+        .pattern(/^[a-zA-Z ]+$/)
         .required()
     })
     return {
