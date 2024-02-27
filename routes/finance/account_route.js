@@ -1,6 +1,6 @@
 import express from 'express'
 
-import AccountController from '../../controllers/finance/account_controller'
+import AccountController from '../../controllers/finance/account_controller.js'
 
 const accountRouter = express.Router()
 
