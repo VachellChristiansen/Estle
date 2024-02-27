@@ -76,6 +76,12 @@ class UserController {
        * Returns **HTTP Success** when done
        */
       async loginUser(req, res) {
+        if (req.cookies.SessionID) {
+          if (helper.isSessionExists(req.cookies.SessionID)) {
+            return res.status(HTTP_STATUS_CODE.successful.ok).send("Successful Login")
+          }
+        }
+
         let body = req.body
         let userExists = await helper.isUserExists(body.name)
         let passCorrect = await helper.isPassCorrect(body.name, body.pass)
@@ -232,10 +238,22 @@ class UserControllerHelper {
         UserName: name
       }
     })
-    if (!user) {
-      return null
-    }
-    return user.length > 0
+    return user != null
+  }
+
+  /**
+   * Check if session exists based on `sid`
+   * 
+   * @param {*} userId 
+   * @returns `true` if found
+   */
+  async isSessionExists(sid) {
+    const session = await Session.findOne({
+      where: {
+        SessionID: sid
+      }
+    })
+    return session != null
   }
 
   /**
@@ -254,7 +272,7 @@ class UserControllerHelper {
     if (!user) {
       return null
     }
-    return bcrypt.compareSync(pass, user[0].get().UserPass)
+    return bcrypt.compareSync(pass, user.get().UserPass)
   }
 }
 
