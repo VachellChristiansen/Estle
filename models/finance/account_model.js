@@ -6,21 +6,21 @@ export const Account = sequelize.define('Account', {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0
   },
-  Type: {
+  Name: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  BankName: {
-    type: DataTypes.STRING,
-  },
-  BankNumber: {
-    type: DataTypes.BIGINT,
   },
   Provider: {
     type: DataTypes.STRING,
   },
-  WalletNumber: {
+  Number: {
     type: DataTypes.BIGINT
   }
 })
 
+export const AccountType = sequelize.define('AccountType', {
+  Type: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+})
