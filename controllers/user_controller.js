@@ -180,23 +180,6 @@ class UserController {
 
 class UserControllerHelper {
   /**
-   * Get `User ID` based on `Session ID` in **Session** table
-   * 
-   * @param {*} sid 
-   * @returns {number} userId
-   */
-  async getUserFromSession(sid) {
-    const userId = await Session.findAll({
-      attributes: ['UserId']
-    }, {
-      where: {
-        SessionID: sid
-      }
-    })
-    return userId
-  }
-
-  /**
    * Get `User Data` based on `User ID` in **User** table
    * 
    * @param {*} userId 
