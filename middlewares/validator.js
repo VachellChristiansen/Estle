@@ -78,9 +78,11 @@ class Validator {
       balance: Joi.number()
         .precision(2),
       provider: Joi.string()
+        .allow("")
         .pattern(/^[a-zA-Z0-9 ]*$/)
         .trim(),
-      number: Joi.number(),
+      number: Joi.number()
+        .allow(""),
       type: Joi.string()
         .pattern(/^[a-zA-Z ]+$/)
     })
