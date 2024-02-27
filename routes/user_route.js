@@ -7,6 +7,7 @@ import Verificator from '../middlewares/verificator.js'
 
 const userRouter = express.Router()
 
+userRouter.get('/', UserController.GET().base)
 userRouter.get('/logout', Verificator.SESSION().verification, UserController.GET().logoutUser)
 
 userRouter.post('/create', Validator.USER().create, UserController.POST().createUser)
