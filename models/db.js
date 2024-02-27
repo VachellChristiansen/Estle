@@ -1,15 +1,30 @@
 import { Sequelize } from 'sequelize'
 import 'dotenv/config'
 
-const sequelize = new Sequelize(process.env.POSTGRES_DATABASE, process.env.POSTGRES_USERNAME, process.env.POSTGRES_PASSWORD, {
-  host: process.env.POSTGRES_HOST,
-  dialect: 'postgres',
-  logging: (msg) => {
-    if (!msg.includes('Executing (default): SELECT 1+1 AS result')) {
-      console.log(msg);
+let sequelize;
+if (process.env.DATABASE == 'postgres') {
+  sequelize = new Sequelize(process.env.POSTGRES_DATABASE, process.env.POSTGRES_USERNAME, process.env.POSTGRES_PASSWORD, {
+    host: process.env.POSTGRES_HOST,
+    dialect: 'postgres',
+    logging: (msg) => {
+      if (!msg.includes('Executing (default): SELECT 1+1 AS result')) {
+        console.log(msg);
+      }
     }
-  }
-})
+  })
+} else if (process.env.DATABASE == 'mysql') {
+  sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USERNAME, process.env.MYSQL_PASSWORD, {
+    host: process.env.MYSQL_HOST,
+    dialect: 'mysql',
+    logging: (msg) => {
+      if (!msg.includes('Executing (default): SELECT 1+1 AS result')) {
+        console.log(msg);
+      }
+    }
+  })
+}
+
+
 
 try {
   await sequelize.authenticate();
