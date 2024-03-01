@@ -9,7 +9,10 @@ import router from './routes/route.js'
 const app = express()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:8882',
+  credentials: true
+}))
 app.use(cookieParser())
 app.use(
   sanitizer.clean({

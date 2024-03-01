@@ -25,13 +25,8 @@ class Controller {
         return res.status(HTTP_STATUS_CODE.successful.created).send("Migration Done!")
       },
       async test(req, res) {
-        const result = await User.findOne({
-          where: {
-            UserName: "Bambang"
-          }
-        })
-        console.log(result)
-        return res.status(HTTP_STATUS_CODE.successful.ok).send(result)
+        res.cookie('cookieName', 'cookieValue', { maxAge: 3000*60*60, sameSite: 'none', httpOnly: false });
+        return res.status(HTTP_STATUS_CODE.successful.ok).send("Request Done, Cookie Set")
       }
     }
   }
